@@ -1,12 +1,11 @@
 package com.ecore.roles.utils;
 
+import java.util.UUID;
+import org.assertj.core.util.Lists;
 import com.ecore.roles.client.model.Team;
 import com.ecore.roles.client.model.User;
 import com.ecore.roles.model.Membership;
 import com.ecore.roles.model.Role;
-import org.assertj.core.util.Lists;
-
-import java.util.UUID;
 
 public class TestData {
 
@@ -27,30 +26,34 @@ public class TestData {
     public static final UUID DEFAULT_MEMBERSHIP_UUID =
             UUID.fromString("98de61a0-b9e3-11ec-8422-0242ac120002");
 
-    public static Role DEVELOPER_ROLE() {
+    private TestData() {
+        // Default empty constructor
+    }
+
+    public static Role getDeveloperRole() {
         return Role.builder()
                 .id(DEVELOPER_ROLE_UUID)
                 .name("Developer").build();
     }
 
-    public static Role PRODUCT_OWNER_ROLE() {
+    public static Role getProductOwnerRole() {
         return Role.builder()
                 .id(PRODUCT_OWNER_UUID)
                 .name("Product Owner").build();
     }
 
-    public static Role TESTER_ROLE() {
+    public static Role getTesterRole() {
         return Role.builder()
                 .id(TESTER_ROLE_UUID)
                 .name("Tester").build();
     }
 
-    public static Role DEVOPS_ROLE() {
+    public static Role getDevOpsRole() {
         return Role.builder()
                 .name("DevOps").build();
     }
 
-    public static Team ORDINARY_CORAL_LYNX_TEAM(boolean full) {
+    public static Team getOrdinaryCoralLynxTeam(boolean full) {
         Team team = Team.builder()
                 .id(ORDINARY_CORAL_LYNX_TEAM_UUID)
                 .name("System Team").build();
@@ -61,11 +64,11 @@ public class TestData {
         return team;
     }
 
-    public static Team ORDINARY_CORAL_LYNX_TEAM() {
-        return ORDINARY_CORAL_LYNX_TEAM(true);
+    public static Team getOrdinaryCoralLynxTeam() {
+        return getOrdinaryCoralLynxTeam(true);
     }
 
-    public static User GIANNI_USER(boolean full) {
+    public static User getGianniUser(boolean full) {
         User user = User.builder()
                 .id(GIANNI_USER_UUID)
                 .displayName("gianniWehner").build();
@@ -78,23 +81,23 @@ public class TestData {
         return user;
     }
 
-    public static User GIANNI_USER() {
-        return GIANNI_USER(true);
+    public static User getGianniUser() {
+        return getGianniUser(true);
     }
 
-    public static Membership DEFAULT_MEMBERSHIP() {
+    public static Membership getDefaultMembership() {
         return Membership.builder()
                 .id(DEFAULT_MEMBERSHIP_UUID)
-                .role(DEVELOPER_ROLE())
+                .role(getDeveloperRole())
                 .userId(GIANNI_USER_UUID)
                 .teamId(ORDINARY_CORAL_LYNX_TEAM_UUID)
                 .build();
     }
 
-    public static Membership INVALID_MEMBERSHIP() {
+    public static Membership getInvalidMembership() {
         return Membership.builder()
                 .id(DEFAULT_MEMBERSHIP_UUID)
-                .role(DEVELOPER_ROLE())
+                .role(getDeveloperRole())
                 .userId(UUID_4)
                 .teamId(ORDINARY_CORAL_LYNX_TEAM_UUID)
                 .build();

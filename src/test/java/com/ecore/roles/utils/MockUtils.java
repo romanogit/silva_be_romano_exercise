@@ -18,6 +18,10 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 public class MockUtils {
 
+    private MockUtils() {
+        // Default empty constructor
+    }
+
     public static void mockGetUserById(MockRestServiceServer mockServer, UUID userId, User user) {
         try {
             mockServer.expect(requestTo("http://test.com/users/" + userId))

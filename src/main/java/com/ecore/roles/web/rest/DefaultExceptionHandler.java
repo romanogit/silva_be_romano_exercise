@@ -3,10 +3,12 @@ package com.ecore.roles.web.rest;
 import com.ecore.roles.exception.ErrorResponse;
 import com.ecore.roles.exception.ResourceExistsException;
 import com.ecore.roles.exception.ResourceNotFoundException;
+import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@NoArgsConstructor
 @ControllerAdvice
 public class DefaultExceptionHandler {
 

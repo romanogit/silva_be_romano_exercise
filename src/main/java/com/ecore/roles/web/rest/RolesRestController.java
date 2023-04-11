@@ -5,6 +5,7 @@ import com.ecore.roles.service.RolesService;
 import com.ecore.roles.web.RolesApi;
 import com.ecore.roles.web.dto.RoleDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +18,28 @@ import static com.ecore.roles.web.dto.RoleDto.fromModel;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/roles")
+@RequestMapping("/v1/roles")
 public class RolesRestController implements RolesApi {
 
     private final RolesService rolesService;
 
     @Override
     @PostMapping(
-            consumes = {"application/json"},
-            produces = {"application/json"})
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<RoleDto> createRole(
             @Valid @RequestBody RoleDto role) {
         return ResponseEntity
                 .status(200)
-                .body(fromModel(rolesService.CreateRole(role.toModel())));
+                .body(fromModel(rolesService.createRole(role.toModel())));
     }
 
     @Override
-    @PostMapping(
+    @GetMapping(
             produces = {"application/json"})
     public ResponseEntity<List<RoleDto>> getRoles() {
 
-        List<Role> getRoles = rolesService.GetRoles();
+        List<Role> getRoles = rolesService.getRoles();
 
         List<RoleDto> roleDtoList = new ArrayList<>();
 
@@ -53,14 +54,14 @@ public class RolesRestController implements RolesApi {
     }
 
     @Override
-    @PostMapping(
+    @GetMapping(
             path = "/{roleId}",
             produces = {"application/json"})
     public ResponseEntity<RoleDto> getRole(
             @PathVariable UUID roleId) {
         return ResponseEntity
                 .status(200)
-                .body(fromModel(rolesService.GetRole(roleId)));
+                .body(fromModel(rolesService.getRole(roleId)));
     }
 
 }

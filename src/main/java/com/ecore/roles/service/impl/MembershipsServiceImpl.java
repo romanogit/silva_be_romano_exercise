@@ -1,5 +1,10 @@
 package com.ecore.roles.service.impl;
 
+import static java.util.Optional.ofNullable;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+import com.ecore.roles.client.model.Team;
 import com.ecore.roles.exception.InvalidArgumentException;
 import com.ecore.roles.exception.ResourceExistsException;
 import com.ecore.roles.exception.ResourceNotFoundException;
@@ -8,30 +13,17 @@ import com.ecore.roles.model.Role;
 import com.ecore.roles.repository.MembershipRepository;
 import com.ecore.roles.repository.RoleRepository;
 import com.ecore.roles.service.MembershipsService;
+import com.ecore.roles.service.TeamsService;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.UUID;
-
-import static java.util.Optional.ofNullable;
-
-@Log4j2
+@RequiredArgsConstructor
 @Service
 public class MembershipsServiceImpl implements MembershipsService {
 
     private final MembershipRepository membershipRepository;
     private final RoleRepository roleRepository;
-
-    @Autowired
-    public MembershipsServiceImpl(
-            MembershipRepository membershipRepository,
-            RoleRepository roleRepository) {
-        this.membershipRepository = membershipRepository;
-        this.roleRepository = roleRepository;
-    }
+    private final TeamsService teamsService;
 
     @Override
     public Membership assignRoleToMembership(@NonNull Membership m) {
@@ -45,6 +37,10 @@ public class MembershipsServiceImpl implements MembershipsService {
         }
 
         roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException(Role.class, roleId));
+
+        ofNullable(teamsService.getTeam(m.getTeamId()))
+                .orElseThrow(() -> new ResourceNotFoundException(Team.class, m.getTeamId()));
+
         return membershipRepository.save(m);
     }
 
