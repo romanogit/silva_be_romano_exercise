@@ -56,9 +56,6 @@ public class MembershipsServiceImpl implements MembershipsService {
                 .orElseThrow(() -> new ResourceNotFoundException(Team.class, teamId));
 
         if (team.getTeamLeadId() != userId) {
-            System.out.println(userId);
-            System.out.println(team.getTeamLeadId());
-            System.out.println(team.getTeamMemberIds());
             if (!team.getTeamMemberIds().contains(userId)) {
                 throw new InvalidMembershipException();
             }
