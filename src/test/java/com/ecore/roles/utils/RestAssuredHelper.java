@@ -20,6 +20,10 @@ import static io.restassured.http.ContentType.JSON;
 
 public class RestAssuredHelper {
 
+    private RestAssuredHelper() {
+        // Default private constructor
+    }
+
     public static void setUp(int port) {
         RestAssured.reset();
         RestAssured.defaultParser = Parser.JSON;
@@ -87,7 +91,7 @@ public class RestAssuredHelper {
 
     public static class EcoreValidatableResponse {
 
-        ValidatableResponse validatableResponse;
+        private final ValidatableResponse validatableResponse;
 
         public EcoreValidatableResponse(ValidatableResponse validatableResponse) {
             this.validatableResponse = validatableResponse;
@@ -109,6 +113,5 @@ public class RestAssuredHelper {
             return this.validatableResponse
                     .extract();
         }
-
     }
 }

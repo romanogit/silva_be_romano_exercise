@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Roles API</a> &gt; <a href="index.source.html" class="el_package">com.ecore.roles.web.rest</a> &gt; <span class="el_source">DefaultExceptionHandler.java</span></div><h1>DefaultExceptionHandler.java</h1><pre class="source lang-java linenums">package com.ecore.roles.web.rest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
+import com.ecore.roles.exception.InvalidMembershipException;
+import com.ecore.roles.exception.ResourceExistsException;
+import com.ecore.roles.exception.ResourceNotFoundException;
+import com.ecore.roles.web.dto.ErrorResponse;
+import lombok.NoArgsConstructor;
+
+<span class="fc" id="L14">@NoArgsConstructor</span>
+@ControllerAdvice
+public class DefaultExceptionHandler {
+
+    @ExceptionHandler
+    public ResponseEntity&lt;ErrorResponse&gt; handle(ResourceNotFoundException exception) {
+<span class="fc" id="L20">        return createResponse(HttpStatus.NOT_FOUND, exception.getMessage());</span>
+    }
+
+    @ExceptionHandler
+    public ResponseEntity&lt;ErrorResponse&gt; handle(ResourceExistsException exception) {
+<span class="fc" id="L25">        return createResponse(HttpStatus.BAD_REQUEST, exception.getMessage());</span>
+    }
+
+    @ExceptionHandler
+    public ResponseEntity&lt;ErrorResponse&gt; handle(InvalidMembershipException exception) {
+<span class="fc" id="L30">        return createResponse(HttpStatus.BAD_REQUEST, exception.getMessage());</span>
+    }
+
+    @ExceptionHandler
+    public ResponseEntity&lt;ErrorResponse&gt; handle(IllegalStateException exception) {
+<span class="nc" id="L35">        return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());</span>
+    }
+
+    @ExceptionHandler
+    public ResponseEntity&lt;ErrorResponse&gt; handle(HttpClientErrorException exception) {
+<span class="nc" id="L40">        return createResponse(exception.getStatusCode(), exception.getMessage());</span>
+    }
+
+    private ResponseEntity&lt;ErrorResponse&gt; createResponse(HttpStatus status, String exception) {
+<span class="fc" id="L44">        return ResponseEntity</span>
+<span class="fc" id="L45">                .status(status)</span>
+<span class="fc" id="L46">                .body(ErrorResponse.builder()</span>
+<span class="fc" id="L47">                        .status(status.value())</span>
+<span class="fc" id="L48">                        .error(exception).build());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

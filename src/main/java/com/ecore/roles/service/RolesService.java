@@ -1,16 +1,16 @@
 package com.ecore.roles.service;
 
-import com.ecore.roles.model.Role;
-
 import java.util.List;
 import java.util.UUID;
+import com.ecore.roles.model.Role;
 
 public interface RolesService {
 
-    Role CreateRole(Role role);
+    Role createRole(Role role);
 
-    Role GetRole(UUID id);
+    Role getRole(UUID roleId);
 
-    List<Role> GetRoles();
+    List<Role> getRoles();
 
+    List<Role> getRoles(UUID userId, UUID teamId);
 }

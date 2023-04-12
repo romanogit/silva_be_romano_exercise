@@ -1,6 +1,13 @@
 package com.ecore.roles.service.impl;
 
+import static java.util.Optional.ofNullable;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+import com.ecore.roles.client.model.Team;
+import com.ecore.roles.client.model.User;
 import com.ecore.roles.exception.InvalidArgumentException;
+import com.ecore.roles.exception.InvalidMembershipException;
 import com.ecore.roles.exception.ResourceExistsException;
 import com.ecore.roles.exception.ResourceNotFoundException;
 import com.ecore.roles.model.Membership;
@@ -8,48 +15,57 @@ import com.ecore.roles.model.Role;
 import com.ecore.roles.repository.MembershipRepository;
 import com.ecore.roles.repository.RoleRepository;
 import com.ecore.roles.service.MembershipsService;
+import com.ecore.roles.service.TeamsService;
+import com.ecore.roles.service.UsersService;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.UUID;
-
-import static java.util.Optional.ofNullable;
-
-@Log4j2
+@RequiredArgsConstructor
 @Service
 public class MembershipsServiceImpl implements MembershipsService {
 
     private final MembershipRepository membershipRepository;
+
     private final RoleRepository roleRepository;
 
-    @Autowired
-    public MembershipsServiceImpl(
-            MembershipRepository membershipRepository,
-            RoleRepository roleRepository) {
-        this.membershipRepository = membershipRepository;
-        this.roleRepository = roleRepository;
-    }
+    private final UsersService usersService;
+
+    private final TeamsService teamsService;
 
     @Override
-    public Membership assignRoleToMembership(@NonNull Membership m) {
+    public Membership assignRoleToMembership(@NonNull Membership membership) {
 
-        UUID roleId = ofNullable(m.getRole()).map(Role::getId)
+        UUID roleId = ofNullable(membership.getRole()).map(Role::getId)
                 .orElseThrow(() -> new InvalidArgumentException(Role.class));
 
-        if (membershipRepository.findByUserIdAndTeamId(m.getUserId(), m.getTeamId())
+        UUID userId = membership.getUserId();
+        UUID teamId = membership.getTeamId();
+
+        if (membershipRepository
+                .findByRoleIdUserIdAndTeamId(roleId, userId, teamId)
                 .isPresent()) {
             throw new ResourceExistsException(Membership.class);
         }
 
         roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException(Role.class, roleId));
-        return membershipRepository.save(m);
+
+        ofNullable(usersService.getUser(userId))
+                .orElseThrow(() -> new ResourceNotFoundException(User.class, userId));
+
+        Team team = ofNullable(teamsService.getTeam(teamId))
+                .orElseThrow(() -> new ResourceNotFoundException(Team.class, teamId));
+
+        if (team.getTeamLeadId() != userId) {
+            if (!team.getTeamMemberIds().contains(userId)) {
+                throw new InvalidMembershipException();
+            }
+        }
+
+        return membershipRepository.save(membership);
     }
 
     @Override
-    public List<Membership> getMemberships(@NonNull UUID rid) {
-        return membershipRepository.findByRoleId(rid);
+    public List<Membership> getMemberships(@NonNull UUID roleId) {
+        return membershipRepository.findByRoleId(roleId);
     }
 }

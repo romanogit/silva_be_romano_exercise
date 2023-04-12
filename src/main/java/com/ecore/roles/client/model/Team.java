@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Id;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +19,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class Team {
 
-    @Id
     @JsonProperty
     private UUID id;
 

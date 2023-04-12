@@ -19,9 +19,9 @@ public class TeamsClient {
     private final RestTemplate restTemplate;
     private final ClientsConfigurationProperties clientsConfigurationProperties;
 
-    public ResponseEntity<Team> getTeam(UUID id) {
+    public ResponseEntity<Team> getTeam(UUID teamId) {
         return restTemplate.exchange(
-                clientsConfigurationProperties.getTeamsApiHost() + "/" + id,
+                clientsConfigurationProperties.getTeamsApiHost() + "/" + teamId,
                 HttpMethod.GET,
                 null,
                 Team.class);

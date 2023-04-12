@@ -1,29 +1,39 @@
 package com.ecore.roles.service.impl;
 
+import java.util.List;
+import java.util.UUID;
+import javax.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import com.ecore.roles.client.UsersClient;
 import com.ecore.roles.client.model.User;
 import com.ecore.roles.service.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.UUID;
-
+@RequiredArgsConstructor
 @Service
 public class UsersServiceImpl implements UsersService {
 
     private final UsersClient usersClient;
 
-    @Autowired
-    public UsersServiceImpl(UsersClient usersClient) {
-        this.usersClient = usersClient;
+    @Override
+    public User getUser(@NotNull UUID userId) {
+        ResponseEntity<User> response = usersClient.getUser(userId);
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new HttpClientErrorException(response.getStatusCode(), "Error fetching user");
+        }
+
+        return response.getBody();
     }
 
-    public User getUser(UUID id) {
-        return usersClient.getUser(id).getBody();
-    }
-
+    @Override
     public List<User> getUsers() {
-        return usersClient.getUsers().getBody();
+        ResponseEntity<List<User>> response = usersClient.getUsers();
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new HttpClientErrorException(response.getStatusCode(), "Error fetching users");
+        }
+        return response.getBody();
     }
 }

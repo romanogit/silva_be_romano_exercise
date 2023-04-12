@@ -33,7 +33,7 @@ public class MembershipDto {
     @EqualsAndHashCode.Include
     private UUID roleId;
 
-    @JsonProperty(value = "teamMemberId")
+    @JsonProperty("teamMemberId")
     @Valid
     @NotNull
     @EqualsAndHashCode.Include

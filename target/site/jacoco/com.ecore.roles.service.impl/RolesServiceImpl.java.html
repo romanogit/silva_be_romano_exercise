@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RolesServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Roles API</a> &gt; <a href="index.source.html" class="el_package">com.ecore.roles.service.impl</a> &gt; <span class="el_source">RolesServiceImpl.java</span></div><h1>RolesServiceImpl.java</h1><pre class="source lang-java linenums">package com.ecore.roles.service.impl;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import com.ecore.roles.exception.ResourceExistsException;
+import com.ecore.roles.exception.ResourceNotFoundException;
+import com.ecore.roles.model.Membership;
+import com.ecore.roles.model.Role;
+import com.ecore.roles.repository.MembershipRepository;
+import com.ecore.roles.repository.RoleRepository;
+import com.ecore.roles.service.RolesService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+<span class="fc" id="L17">@RequiredArgsConstructor</span>
+@Service
+public class RolesServiceImpl implements RolesService {
+
+    private final RoleRepository roleRepository;
+
+    private final MembershipRepository membershipRepository;
+
+    @Override
+<span class="fc bfc" id="L26" title="All 2 branches covered.">    public Role createRole(@NonNull Role role) {</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (roleRepository.findByName(role.getName()).isPresent()) {</span>
+<span class="fc" id="L28">            throw new ResourceExistsException(Role.class);</span>
+        }
+<span class="fc" id="L30">        return roleRepository.save(role);</span>
+    }
+
+    @Override
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">    public Role getRole(@NonNull UUID roleId) {</span>
+<span class="fc" id="L35">        return roleRepository.findById(roleId)</span>
+<span class="fc" id="L36">                .orElseThrow(() -&gt; new ResourceNotFoundException(Role.class, roleId));</span>
+    }
+
+    @Override
+    public List&lt;Role&gt; getRoles() {
+<span class="fc" id="L41">        return roleRepository.findAll();</span>
+    }
+
+    @Override
+<span class="pc bpc" id="L45" title="2 of 4 branches missed.">    public List&lt;Role&gt; getRoles(@NonNull UUID userId, @NonNull UUID teamId) {</span>
+<span class="fc" id="L46">        return membershipRepository</span>
+<span class="fc" id="L47">                .findByUserIdAndTeamId(userId, teamId).stream().map(Membership::getRole)</span>
+<span class="fc" id="L48">                .collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

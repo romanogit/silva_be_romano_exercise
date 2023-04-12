@@ -1,27 +1,27 @@
 package com.ecore.roles.client;
 
-import com.ecore.roles.client.model.User;
-import com.ecore.roles.configuration.ClientsConfigurationProperties;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-import java.util.UUID;
+import com.ecore.roles.client.model.User;
+import com.ecore.roles.configuration.ClientsConfigurationProperties;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
 public class UsersClient {
 
     private final RestTemplate restTemplate;
+
     private final ClientsConfigurationProperties clientsConfigurationProperties;
 
-    public ResponseEntity<User> getUser(UUID id) {
+    public ResponseEntity<User> getUser(UUID userId) {
         return restTemplate.exchange(
-                clientsConfigurationProperties.getUsersApiHost() + "/" + id,
+                clientsConfigurationProperties.getUsersApiHost() + "/" + userId,
                 HttpMethod.GET,
                 null,
                 User.class);

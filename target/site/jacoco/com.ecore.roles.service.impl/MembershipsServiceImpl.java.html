@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MembershipsServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Roles API</a> &gt; <a href="index.source.html" class="el_package">com.ecore.roles.service.impl</a> &gt; <span class="el_source">MembershipsServiceImpl.java</span></div><h1>MembershipsServiceImpl.java</h1><pre class="source lang-java linenums">package com.ecore.roles.service.impl;
+
+import static java.util.Optional.ofNullable;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+import com.ecore.roles.client.model.Team;
+import com.ecore.roles.client.model.User;
+import com.ecore.roles.exception.InvalidArgumentException;
+import com.ecore.roles.exception.InvalidMembershipException;
+import com.ecore.roles.exception.ResourceExistsException;
+import com.ecore.roles.exception.ResourceNotFoundException;
+import com.ecore.roles.model.Membership;
+import com.ecore.roles.model.Role;
+import com.ecore.roles.repository.MembershipRepository;
+import com.ecore.roles.repository.RoleRepository;
+import com.ecore.roles.service.MembershipsService;
+import com.ecore.roles.service.TeamsService;
+import com.ecore.roles.service.UsersService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+<span class="fc" id="L23">@RequiredArgsConstructor</span>
+@Service
+public class MembershipsServiceImpl implements MembershipsService {
+
+    private final MembershipRepository membershipRepository;
+
+    private final RoleRepository roleRepository;
+
+    private final UsersService usersService;
+
+    private final TeamsService teamsService;
+
+    @Override
+<span class="fc bfc" id="L36" title="All 2 branches covered.">    public Membership assignRoleToMembership(@NonNull Membership membership) {</span>
+
+<span class="fc" id="L38">        UUID roleId = ofNullable(membership.getRole()).map(Role::getId)</span>
+<span class="fc" id="L39">                .orElseThrow(() -&gt; new InvalidArgumentException(Role.class));</span>
+
+<span class="fc" id="L41">        UUID userId = membership.getUserId();</span>
+<span class="fc" id="L42">        UUID teamId = membership.getTeamId();</span>
+
+<span class="fc" id="L44">        if (membershipRepository</span>
+<span class="fc" id="L45">                .findByRoleIdUserIdAndTeamId(roleId, userId, teamId)</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">                .isPresent()) {</span>
+<span class="fc" id="L47">            throw new ResourceExistsException(Membership.class);</span>
+        }
+
+<span class="fc" id="L50">        roleRepository.findById(roleId).orElseThrow(() -&gt; new ResourceNotFoundException(Role.class, roleId));</span>
+
+<span class="fc" id="L52">        ofNullable(usersService.getUser(userId))</span>
+<span class="fc" id="L53">                .orElseThrow(() -&gt; new ResourceNotFoundException(User.class, userId));</span>
+
+<span class="fc" id="L55">        Team team = ofNullable(teamsService.getTeam(teamId))</span>
+<span class="fc" id="L56">                .orElseThrow(() -&gt; new ResourceNotFoundException(Team.class, teamId));</span>
+
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (team.getTeamLeadId() != userId) {</span>
+<span class="fc" id="L59">            System.out.println(userId);</span>
+<span class="fc" id="L60">            System.out.println(team.getTeamLeadId());</span>
+<span class="fc" id="L61">            System.out.println(team.getTeamMemberIds());</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (!team.getTeamMemberIds().contains(userId)) {</span>
+<span class="fc" id="L63">                throw new InvalidMembershipException();</span>
+            }
+        }
+
+<span class="fc" id="L67">        return membershipRepository.save(membership);</span>
+    }
+
+    @Override
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    public List&lt;Membership&gt; getMemberships(@NonNull UUID roleId) {</span>
+<span class="fc" id="L72">        return membershipRepository.findByRoleId(roleId);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
