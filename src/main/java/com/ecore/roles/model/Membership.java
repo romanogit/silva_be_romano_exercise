@@ -17,7 +17,7 @@ import java.util.UUID;
 @Setter
 @Builder
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"team_id", "user_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"role_id", "team_id", "user_id"}))
 public class Membership {
 
     @Id
@@ -26,7 +26,7 @@ public class Membership {
     @Type(type = "uuid-char")
     private UUID id;
 
-    @OneToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface UsersService {
 
-    User getUser(UUID id);
+    User getUser(UUID userId);
 
     List<User> getUsers();
 }

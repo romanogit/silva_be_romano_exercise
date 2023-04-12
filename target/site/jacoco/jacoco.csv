@@ -1,0 +1,20 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Roles API,com.ecore.roles.configuration,RestTemplateConfiguration,0,6,0,0,0,2,0,2,0,2
+Roles API,com.ecore.roles.configuration,ClientsConfigurationProperties,0,17,0,0,0,4,0,5,0,5
+Roles API,com.ecore.roles.web.rest,DefaultExceptionHandler,13,32,0,0,2,9,2,5,2,5
+Roles API,com.ecore.roles.web.rest,MembershipsRestController,0,32,0,0,0,10,0,3,0,3
+Roles API,com.ecore.roles.web.rest,UsersRestController,22,6,0,0,8,1,2,1,2,1
+Roles API,com.ecore.roles.web.rest,TeamsRestController,22,6,0,0,8,1,2,1,2,1
+Roles API,com.ecore.roles.web.rest,RolesRestController,0,53,0,0,0,17,0,5,0,5
+Roles API,com.ecore.roles.exception,ResourceNotFoundException,0,16,0,0,0,2,0,1,0,1
+Roles API,com.ecore.roles.exception,InvalidMembershipException,0,4,0,0,0,2,0,1,0,1
+Roles API,com.ecore.roles.exception,InvalidArgumentException,0,12,0,0,0,2,0,1,0,1
+Roles API,com.ecore.roles.exception,ResourceExistsException,0,12,0,0,0,2,0,1,0,1
+Roles API,com.ecore.roles.service.impl,UsersServiceImpl,0,45,0,4,0,9,0,5,0,3
+Roles API,com.ecore.roles.service.impl,TeamsServiceImpl,0,45,0,4,0,9,0,5,0,3
+Roles API,com.ecore.roles.service.impl,RolesServiceImpl,15,71,3,7,0,13,3,8,0,6
+Roles API,com.ecore.roles.service.impl,MembershipsServiceImpl,0,142,1,9,0,24,1,11,0,7
+Roles API,com.ecore.roles.client,UsersClient.new ParameterizedTypeReference() {...},6,0,0,0,1,0,1,0,1,0
+Roles API,com.ecore.roles.client,UsersClient,15,23,0,0,2,3,1,2,1,2
+Roles API,com.ecore.roles.client,TeamsClient,15,23,0,0,2,3,1,2,1,2
+Roles API,com.ecore.roles.client,TeamsClient.new ParameterizedTypeReference() {...},6,0,0,0,1,0,1,0,1,0

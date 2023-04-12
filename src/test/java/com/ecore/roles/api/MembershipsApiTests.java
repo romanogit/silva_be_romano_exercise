@@ -1,13 +1,15 @@
 package com.ecore.roles.api;
 
+import static com.ecore.roles.utils.FixtureFactory.DEVELOPER_ROLE_UUID;
+import static com.ecore.roles.utils.FixtureFactory.UUID_1;
+import static com.ecore.roles.utils.FixtureFactory.getDefaultMembership;
+import static com.ecore.roles.utils.FixtureFactory.getGianniUser;
+import static com.ecore.roles.utils.FixtureFactory.getInvalidMembership;
+import static com.ecore.roles.utils.FixtureFactory.getOrdinaryCoralLynxTeam;
 import static com.ecore.roles.utils.MockUtils.mockGetTeamById;
+import static com.ecore.roles.utils.MockUtils.mockGetUserById;
 import static com.ecore.roles.utils.RestAssuredHelper.createMembership;
 import static com.ecore.roles.utils.RestAssuredHelper.getMemberships;
-import static com.ecore.roles.utils.TestData.DEVELOPER_ROLE_UUID;
-import static com.ecore.roles.utils.TestData.UUID_1;
-import static com.ecore.roles.utils.TestData.getDefaultMembership;
-import static com.ecore.roles.utils.TestData.getInvalidMembership;
-import static com.ecore.roles.utils.TestData.getOrdinaryCoralLynxTeam;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,8 +119,18 @@ public class MembershipsApiTests {
     }
 
     @Test
+    void shouldFailToCreateRoleMembershipWhenUserDoesNotExist() {
+        Membership expectedMembership = getDefaultMembership();
+        mockGetUserById(mockServer, expectedMembership.getUserId(), null);
+
+        createMembership(expectedMembership)
+                .validate(404, format("User %s not found", expectedMembership.getUserId()));
+    }
+
+    @Test
     void shouldFailToCreateRoleMembershipWhenTeamDoesNotExist() {
         Membership expectedMembership = getDefaultMembership();
+        mockGetUserById(mockServer, expectedMembership.getUserId(), getGianniUser());
         mockGetTeamById(mockServer, expectedMembership.getTeamId(), null);
 
         createMembership(expectedMembership)
@@ -128,6 +140,7 @@ public class MembershipsApiTests {
     @Test
     void shouldFailToAssignRoleWhenMembershipIsInvalid() {
         Membership expectedMembership = getInvalidMembership();
+        mockGetUserById(mockServer, expectedMembership.getUserId(), getGianniUser());
         mockGetTeamById(mockServer, expectedMembership.getTeamId(), getOrdinaryCoralLynxTeam());
 
         createMembership(expectedMembership)
@@ -166,6 +179,7 @@ public class MembershipsApiTests {
 
     private MembershipDto createDefaultMembership() {
         Membership expectedMembership = getDefaultMembership();
+        mockGetUserById(mockServer, expectedMembership.getUserId(), getGianniUser());
         mockGetTeamById(mockServer, expectedMembership.getTeamId(), getOrdinaryCoralLynxTeam());
 
         return createMembership(expectedMembership)

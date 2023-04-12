@@ -19,9 +19,9 @@ public class UsersClient {
 
     private final ClientsConfigurationProperties clientsConfigurationProperties;
 
-    public ResponseEntity<User> getUser(UUID id) {
+    public ResponseEntity<User> getUser(UUID userId) {
         return restTemplate.exchange(
-                clientsConfigurationProperties.getUsersApiHost() + "/" + id,
+                clientsConfigurationProperties.getUsersApiHost() + "/" + userId,
                 HttpMethod.GET,
                 null,
                 User.class);
